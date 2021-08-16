@@ -1,17 +1,15 @@
 import React from "react";
-import { GlobalStyle } from "./AppStyle";
-import { Layout } from "./components/Layout/Layout";
-import { Route, Router } from "react-router-dom";
+import {GlobalStyle} from "./AppStyle";
+import {Layout} from "./components/Layout/Layout";
+import {Route} from "react-router-dom";
 
 export const App = () => {
-  return (
-    <>
-      <GlobalStyle />
-      <Layout>
-        <Router>
-          <Route path="/">Testing</Route>
-        </Router>
-      </Layout>
-    </>
-  );
+    return (
+        <>
+            <GlobalStyle/>
+            <Layout>
+                <Route exact path="/">Testing</Route>
+            </Layout>
+        </>
+    );
 };
