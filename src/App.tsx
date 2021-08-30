@@ -13,56 +13,67 @@ import {
   Segment,
 } from "semantic-ui-react";
 
+import { LOGIN_API_URL, OAUTH_API_URL } from "./constants";
+import { LoginOAuth, OAuthResponse, LoginModel } from "./models/auth";
+import {Register} from "./components/Authentication/Register/Register";
 export const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  async function connectEndpoint(apiEndpoint: string) {
-    const endpoint = `https://localhost:5001${apiEndpoint}`;
-    console.log(endpoint);
-
-    const options = {
+  function createOptions(data: LoginModel | LoginOAuth) {
+    return {
       method: "POST",
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-      headers: {
+      body: JSON.stringify(data),
+      headers:{
         "Content-type": "application/json; charset=UTF-8",
-      },
-    };
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "X-Requested-With"
+      }
+    }
+  }
+
+  async function processEndpoint(endpoint: string, data: LoginModel | LoginOAuth) {
+    console.log("Endpoint: ", endpoint);
 
     try {
-      const response = await fetch(endpoint, options);
+      const response = await fetch(endpoint, createOptions(data));
       console.log(response);
-      const data = await response.json();
-      return data;
-    } catch (e) {
+
+      return await response.json();
+    }
+    catch(e){
       return e;
     }
   }
 
+
+  async function standardLogin(data: LoginModel) {
+    return await processEndpoint(LOGIN_API_URL, data);
+  }
+
+  async function oauthLogin(data: LoginOAuth) {
+    return await processEndpoint(OAUTH_API_URL, data);
+  }
   const loginHandler = (event: any) => {
     event.preventDefault();
 
-    connectEndpoint("/api/auth/login");
+    const response = standardLogin({username, password});
+    console.log(response);
 
     setUsername("");
     setPassword("");
   };
+
   const githubHandler = () => {
-    connectEndpoint("/api/oauth/signin?provider=GitHub");
   };
   const discordHandler = () => {
-    connectEndpoint("/api/oauth/signin?provider=Discord");
   };
 
-  const holdUsername = (event: any) => {
-    console.log(event.target.value);
+  const onUsernameChange = (event: any) => {
     setUsername(event.target.value);
   };
-  const holdPassword = (event: any) => {
-    console.log(event.target.value);
+
+  const onPasswordChange = (event: any) => {
     setPassword(event.target.value);
   };
 
@@ -71,6 +82,7 @@ export const App = () => {
       <GlobalStyle />
       <Container>
         <Segment padded="very" vertical>
+          <Register/>
           <Card centered>
             <CardContent>
               <Segment basic vertical>
@@ -83,7 +95,7 @@ export const App = () => {
                     placeholder="Username"
                     fluid
                     value={username}
-                    onChange={holdUsername}
+                    onChange={onUsernameChange}
                   />
                   <FormInput
                     icon="lock"
@@ -92,7 +104,7 @@ export const App = () => {
                     type="password"
                     fluid
                     value={password}
-                    onChange={holdPassword}
+                    onChange={onPasswordChange}
                   />
                   <ButtonGroup vertical fluid>
                     <Button onClick={loginHandler}>
