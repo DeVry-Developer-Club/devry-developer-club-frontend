@@ -15,7 +15,7 @@ import {
 
 import { LOGIN_API_URL, OAUTH_API_URL } from "./constants";
 import { LoginOAuth, OAuthResponse, LoginModel } from "./models/auth";
-import {Register} from "./components/Authentication/Register/Register";
+import { Register } from "./components/Authentication/Register/Register";
 export const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -24,15 +24,18 @@ export const App = () => {
     return {
       method: "POST",
       body: JSON.stringify(data),
-      headers:{
+      headers: {
         "Content-type": "application/json; charset=UTF-8",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "X-Requested-With"
-      }
-    }
+        "Access-Control-Allow-Headers": "X-Requested-With",
+      },
+    };
   }
 
-  async function processEndpoint(endpoint: string, data: LoginModel | LoginOAuth) {
+  async function processEndpoint(
+    endpoint: string,
+    data: LoginModel | LoginOAuth
+  ) {
     console.log("Endpoint: ", endpoint);
 
     try {
@@ -40,12 +43,10 @@ export const App = () => {
       console.log(response);
 
       return await response.json();
-    }
-    catch(e){
+    } catch (e) {
       return e;
     }
   }
-
 
   async function standardLogin(data: LoginModel) {
     return await processEndpoint(LOGIN_API_URL, data);
@@ -57,17 +58,15 @@ export const App = () => {
   const loginHandler = (event: any) => {
     event.preventDefault();
 
-    const response = standardLogin({username, password});
+    const response = standardLogin({ username, password });
     console.log(response);
 
     setUsername("");
     setPassword("");
   };
 
-  const githubHandler = () => {
-  };
-  const discordHandler = () => {
-  };
+  const githubHandler = () => {};
+  const discordHandler = () => {};
 
   const onUsernameChange = (event: any) => {
     setUsername(event.target.value);
@@ -82,7 +81,7 @@ export const App = () => {
       <GlobalStyle />
       <Container>
         <Segment padded="very" vertical>
-          <Register/>
+          <Register />
           <Card centered>
             <CardContent>
               <Segment basic vertical>
